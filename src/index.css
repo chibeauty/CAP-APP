@@ -9,9 +9,15 @@
 
   body {
     @apply bg-background-light dark:bg-dark-background text-gray-900 dark:text-dark-text;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 
   /* Ensure minimum tap target sizes */
@@ -23,14 +29,15 @@
     @apply min-h-tap min-w-tap;
   }
 
-  /* Focus styles for accessibility */
+  /* Enhanced focus styles for accessibility */
   *:focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 dark:ring-offset-dark-background;
+    transition: ring-offset 0.2s ease;
   }
 
-  /* Scrollbar styles */
+  /* Modern scrollbar styles */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    @apply w-2.5 h-2.5;
   }
 
   ::-webkit-scrollbar-track {
@@ -38,11 +45,18 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+    @apply bg-gradient-to-b from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 rounded-full;
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-gray-500;
+    @apply from-gray-400 to-gray-500 dark:from-gray-500 dark:to-gray-600;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-100;
   }
 }
 
@@ -52,6 +66,28 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/20;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
