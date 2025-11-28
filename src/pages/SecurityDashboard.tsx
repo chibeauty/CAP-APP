@@ -48,7 +48,7 @@ export function SecurityDashboard() {
 
   if (profile?.role !== 'security' && profile?.role !== 'admin') {
     return (
-      <div className="pb-20 md:pb-6 md:ml-64">
+      <div className="pb-20 md:pb-6">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <Card>
             <CardContent className="text-center py-12">
@@ -64,7 +64,7 @@ export function SecurityDashboard() {
   }
 
   return (
-    <div className="pb-20 md:pb-6 md:ml-64">
+    <div className="pb-20 md:pb-6">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-dark-text">

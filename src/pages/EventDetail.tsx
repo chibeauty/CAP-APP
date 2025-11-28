@@ -40,7 +40,7 @@ export function EventDetail() {
 
   if (loading) {
     return (
-      <div className="pb-20 md:pb-6 md:ml-64">
+      <div className="pb-20 md:pb-6">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <p className="text-gray-500 dark:text-gray-400">Loading event...</p>
         </div>
@@ -50,7 +50,7 @@ export function EventDetail() {
 
   if (!event) {
     return (
-      <div className="pb-20 md:pb-6 md:ml-64">
+      <div className="pb-20 md:pb-6">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <Card>
             <CardContent className="text-center py-12">
@@ -66,7 +66,7 @@ export function EventDetail() {
   }
 
   return (
-    <div className="pb-20 md:pb-6 md:ml-64">
+    <div className="pb-20 md:pb-6">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <Link to="/events" className="inline-flex items-center text-primary mb-4">
           <FaArrowLeft className="w-4 h-4 mr-2" />

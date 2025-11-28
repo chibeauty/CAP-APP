@@ -52,7 +52,7 @@ export function EmergencyAlert() {
   }));
 
   return (
-    <div className="pb-20 md:pb-6 md:ml-64 min-h-screen bg-background-light dark:bg-dark-background">
+    <div className="pb-20 md:pb-6 min-h-screen bg-background-light dark:bg-dark-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-4">

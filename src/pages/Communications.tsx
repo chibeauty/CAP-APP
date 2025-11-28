@@ -77,7 +77,7 @@ export function Communications() {
   };
 
   return (
-    <div className="pb-20 md:pb-6 md:ml-64 h-screen flex flex-col">
+    <div className="pb-20 md:pb-6 h-screen flex flex-col">
       <div className="max-w-7xl mx-auto px-4 py-6 flex-1 flex flex-col">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-dark-text">Communications</h1>

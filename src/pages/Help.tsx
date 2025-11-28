@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 
 export function Help() {
   return (
-    <div className="pb-20 md:pb-6 md:ml-64">
+    <div className="pb-20 md:pb-6">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-dark-text">Help & Support</h1>

@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { SidebarProvider, useSidebar } from './contexts/SidebarContext';
 import { Sidebar } from './components/navigation/Sidebar';
 import { BottomNav } from './components/navigation/BottomNav';
 import { HamburgerMenu } from './components/navigation/HamburgerMenu';
@@ -50,11 +51,18 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 function AppLayout({ children }: { children: ReactNode }) {
+  const { isCollapsed } = useSidebar();
+  
   return (
     <>
       <Sidebar />
       <HamburgerMenu />
-      <main className="md:ml-64">{children}</main>
+      <main 
+        className="transition-all duration-300"
+        style={{ marginLeft: isCollapsed ? '80px' : '256px' }}
+      >
+        {children}
+      </main>
       <BottomNav />
       <FloatingPanicButton />
     </>
@@ -202,9 +210,11 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <SidebarProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </SidebarProvider>
       </AuthProvider>
     </ThemeProvider>
   );

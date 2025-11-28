@@ -43,7 +43,7 @@ export function Events() {
   };
 
   return (
-    <div className="pb-20 md:pb-6 md:ml-64">
+    <div className="pb-20 md:pb-6">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
