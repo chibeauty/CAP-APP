@@ -1,0 +1,762 @@
+openapi: 3.0.0
+info:
+  title: CAP App Backend API
+  description: Community Alert & Protection App Backend API
+  version: 1.0.0
+  contact:
+    name: CAP App Support
+    email: support@capapp.com
+
+servers:
+  - url: https://{project}.supabase.co/functions/v1
+    description: Supabase Edge Functions
+    variables:
+      project:
+        default: your-project
+
+security:
+  - bearerAuth: []
+
+paths:
+  /emergency-alert:
+    post:
+      summary: Emergency Alert Operations
+      description: Create, manage, and resolve emergency alerts
+      operationId: emergencyAlert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [create, silent_duress, start_recording, stop_recording, fetch_active, resolve]
+                event_id:
+                  type: string
+                  format: uuid
+                level:
+                  type: string
+                  enum: [low, medium, high, critical]
+                location:
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+                    accuracy:
+                      type: number
+                message:
+                  type: string
+                alert_id:
+                  type: string
+                  format: uuid
+                duress_password:
+                  type: string
+                file_path:
+                  type: string
+                duration_seconds:
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  alert:
+                    $ref: '#/components/schemas/Alert'
+                  upload_url:
+                    type: string
+                  file_path:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /location-tracking:
+    post:
+      summary: Location Tracking Operations
+      description: Submit GPS coordinates and retrieve location history
+      operationId: locationTracking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [submit, history]
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                accuracy:
+                  type: number
+                altitude:
+                  type: number
+                heading:
+                  type: number
+                speed:
+                  type: number
+                event_id:
+                  type: string
+                  format: uuid
+                alert_id:
+                  type: string
+                  format: uuid
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  location:
+                    $ref: '#/components/schemas/LocationLog'
+                  locations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LocationLog'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /communication:
+    post:
+      summary: Communication Operations
+      description: Manage messaging, threads, and WebRTC signaling
+      operationId: communication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [create_thread, send_message, get_threads, get_messages, webrtc_offer, webrtc_answer, webrtc_ice]
+                thread_id:
+                  type: string
+                thread_type:
+                  type: string
+                  enum: [direct, event, group, broadcast, emergency]
+                participants:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                event_id:
+                  type: string
+                  format: uuid
+                alert_id:
+                  type: string
+                  format: uuid
+                content:
+                  type: string
+                type:
+                  type: string
+                  enum: [chat, video, ptt, audio]
+                audio_url:
+                  type: string
+                video_call_session_id:
+                  type: string
+                webrtc_data:
+                  type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  thread:
+                    $ref: '#/components/schemas/MessageThread'
+                  message:
+                    $ref: '#/components/schemas/Message'
+                  threads:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageThread'
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /event-management:
+    post:
+      summary: Event Management Operations
+      description: Create, update, and manage events with risk assessment
+      operationId: eventManagement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [create, update, delete, get, list, assess_risk, update_threat, assign_security, activate, complete]
+                event_id:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+                location_coords:
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                status:
+                  type: string
+                  enum: [upcoming, active, completed, cancelled]
+                risk_factors:
+                  type: array
+                  items:
+                    type: string
+                threat_level:
+                  type: string
+                  enum: [low, medium, high, critical]
+                assigned_security_team:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  event:
+                    $ref: '#/components/schemas/Event'
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  risk_assessment:
+                    $ref: '#/components/schemas/RiskAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /wearable-device:
+    post:
+      summary: Wearable Device Operations
+      description: Pair devices, update status, and handle device-triggered alerts
+      operationId: wearableDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [pair, unpair, update_status, trigger_button, trigger_heartrate, trigger_gesture, get_devices]
+                device_id:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+                device_type:
+                  type: string
+                  enum: [watch, button, bracelet, pendant, other]
+                mac_address:
+                  type: string
+                bluetooth_device_id:
+                  type: string
+                battery_level:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                firmware_version:
+                  type: string
+                heart_rate:
+                  type: integer
+                gesture_type:
+                  type: string
+                location:
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  device:
+                    $ref: '#/components/schemas/Wearable'
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wearable'
+                  alert:
+                    $ref: '#/components/schemas/Alert'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /decoy-mode:
+    post:
+      summary: Decoy Mode Operations
+      description: Configure and manage decoy mode and duress password
+      operationId: decoyMode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [validate_duress, setup, update, get_config, activate_fake_interface, deactivate_fake_interface]
+                duress_password:
+                  type: string
+                enabled:
+                  type: boolean
+                app_type:
+                  type: string
+                  enum: [calculator, weather, notes]
+                activation_gesture:
+                  type: string
+                  enum: [triple_tap, long_press, invisible_button]
+                silent_alert_enabled:
+                  type: boolean
+                location:
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  valid:
+                    type: boolean
+                  config:
+                    $ref: '#/components/schemas/DecoyConfig'
+                  fake_interface_active:
+                    type: boolean
+                  silent_alert_triggered:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /incident-reporting:
+    post:
+      summary: Incident Reporting Operations
+      description: Create reports, generate timelines, and export data
+      operationId: incidentReporting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [create, update, get, list, generate_timeline, export_pdf, export_json]
+                report_id:
+                  type: string
+                  format: uuid
+                alert_id:
+                  type: string
+                  format: uuid
+                event_id:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: object
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+                attachments:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  report:
+                    $ref: '#/components/schemas/IncidentReport'
+                  reports:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IncidentReport'
+                  timeline:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimelineEvent'
+                  data:
+                    type: object
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Alert:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        level:
+          type: string
+          enum: [low, medium, high, critical]
+        location:
+          type: object
+        message:
+          type: string
+        audio_recording_url:
+          type: string
+        is_silent_duress:
+          type: boolean
+        trigger_source:
+          type: string
+        status:
+          type: string
+          enum: [active, acknowledged, resolved, cancelled]
+        created_at:
+          type: string
+          format: date-time
+
+    LocationLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        latitude:
+          type: number
+        longitude:
+          type: number
+        accuracy:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        thread_id:
+          type: string
+        sender_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        type:
+          type: string
+          enum: [chat, video, ptt, audio]
+        created_at:
+          type: string
+          format: date-time
+
+    MessageThread:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        thread_key:
+          type: string
+        thread_type:
+          type: string
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [upcoming, active, completed, cancelled]
+        threat_level:
+          type: string
+          enum: [low, medium, high, critical]
+        created_at:
+          type: string
+          format: date-time
+
+    RiskAssessment:
+      type: object
+      properties:
+        level:
+          type: string
+          enum: [low, medium, high, critical]
+        score:
+          type: integer
+        factors:
+          type: array
+          items:
+            type: string
+        assessed_at:
+          type: string
+          format: date-time
+
+    Wearable:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        device_type:
+          type: string
+        is_connected:
+          type: boolean
+        battery_level:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    DecoyConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+        app_type:
+          type: string
+          enum: [calculator, weather, notes]
+        activation_gesture:
+          type: string
+          enum: [triple_tap, long_press, invisible_button]
+        silent_alert_enabled:
+          type: boolean
+        fake_interface_active:
+          type: boolean
+
+    IncidentReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        alert_id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        location:
+          type: object
+        attachments:
+          type: array
+          items:
+            type: string
+        timeline:
+          type: array
+        status:
+          type: string
+          enum: [draft, submitted, reviewed, archived]
+        created_at:
+          type: string
+          format: date-time
+
+    TimelineEvent:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        event:
+          type: string
+        type:
+          type: string
+          enum: [alert, location, message, audio, event, system]
+        data:
+          type: object
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
