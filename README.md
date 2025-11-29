@@ -4,6 +4,10 @@
 
 ![CAP Dashboard](docs/assets/dashboard.png)
 
+- **Live App**: [https://cap-i2hbxjh5a-ai-automation-of-supply-chain-ops-projects.vercel.app](https://cap-i2hbxjh5a-ai-automation-of-supply-chain-ops-projects.vercel.app)
+- **Pitch Deck**: [View on Google Drive](https://drive.google.com/file/d/1tzeAWRQO-ermHfaGfx9rh7Ppw5dABqXH/view?usp=drivesdk)
+- **Demo Video**: [View on Google Drive](https://drive.google.com/file/d/1tzeAWRQO-ermHfaGfx9rh7Ppw5dABqXH/view?usp=drivesdk)
+
 ## Project Description
 
 **CAP (Community Alert and Protection)** is a cutting-edge Progressive Web Application (PWA) designed to ensure the safety and security of political leaders, public figures, and their communities. In an era of increasing political volatility, CAP provides a robust, real-time emergency response system that bridges the gap between individuals in danger and their security teams. By leveraging modern web technologies and wearable integration, CAP offers a seamless, reliable, and discreet way to signal for help and coordinate rapid responses.
